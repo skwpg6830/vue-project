@@ -1,41 +1,37 @@
 <template>
   <div class="video-container">
-    <video ref="introVideo" @ended="handleVideoEnd" autoplay muted>
+    <video ref="introVideo" autoplay muted loop>
       <source src="@/assets/寶島宣傳影片.mp4" type="video/mp4" />
       您的瀏覽器不支援 HTML5 影片標籤。
     </video>
-    <el-button @click="skipVideo" class="skip-button">跳過</el-button>
   </div>
 </template>
 
 <script>
+import { onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { ElButton } from 'element-plus'
 
 export default {
   name: 'VideoIntro',
   setup() {
     const router = useRouter()
 
-    const handleVideoEnd = () => {
-      console.log('Video ended')
-      sessionStorage.setItem('videoPlayed', 'true')
-      window.location.reload() // 重新整理頁面
+    const handleScroll = (event) => {
+      if (window.scrollY > 0) {
+        router.push('/maincontent')
+      }
     }
 
-    const skipVideo = () => {
-      const video = document.querySelector('video')
-      if (video) {
-        video.pause()
-        video.currentTime = 0 // 重置影片時間
-      }
-      sessionStorage.setItem('videoPlayed', 'true')
-      window.location.reload()
-    }
+    onMounted(() => {
+      window.addEventListener('scroll', handleScroll)
+    })
+
+    onUnmounted(() => {
+      window.removeEventListener('scroll', handleScroll)
+    })
 
     return {
-      handleVideoEnd,
-      skipVideo
+      handleScroll
     }
   }
 }
@@ -43,32 +39,14 @@ export default {
 
 <style scoped>
 .video-container {
-  position: fixed;
-  top: 0;
-  left: 0;
   width: 100%;
-  height: 100%;
-  background-color: black;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 10000; /* 確保影片在最上層 */
+  height: 100vh; /* 影片占滿整個視窗高度 */
+  overflow: hidden;
 }
 
 video {
   width: 100%;
-  height: auto;
-}
-
-.skip-button {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  padding: 10px 20px;
-  background-color: transparent;
-  color: #fff;
-  border: none;
-  cursor: pointer;
-  z-index: 10001; /* 確保按鈕在影片上方 */
+  height: 100%;
+  object-fit: cover; /* 確保影片覆蓋整個容器 */
 }
 </style>
