@@ -6,7 +6,7 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 export default defineConfig({
-  base: './',
+  base: process.env.NODE_ENV === 'production' ? '/你的倉庫名稱/' : '/', // 替換為你的 GitHub 倉庫名稱
   plugins: [vue()],
   resolve: {
     alias: {

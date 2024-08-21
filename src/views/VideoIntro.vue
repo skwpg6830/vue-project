@@ -30,7 +30,7 @@ export default {
         video.currentTime = 0 // 重置影片時間
       }
       sessionStorage.setItem('videoPlayed', 'true')
-      window.location.reload()
+      window.location.reload() // 重新整理頁面
     }
 
     return {
