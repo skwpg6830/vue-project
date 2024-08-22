@@ -19,10 +19,11 @@
     <el-upload
       class="upload-demo"
       drag
-      action="${apiBaseUrl}/public/upload"
-      :before-upload="handleBeforeUpload"
+      :action="`${apiBaseUrl}/public/upload`"
+      :before-upload="beforeUpload"
       :on-success="handleUploadSuccess"
       :on-error="handleUploadError"
+      :file-list="fileList"
       name="images"
       multiple
     >
@@ -160,6 +161,8 @@ import femaleAvatar from '@/assets/female-avatar.png'
 import maleAvatar from '@/assets/male-avatar.png' // 根據需要替換為正確的路徑
 
 const apiBaseUrl = import.meta.env.VITE_API
+
+const fileList = ref([])
 
 const message = ref({
   images: [
@@ -316,7 +319,7 @@ const handleSubmit = async () => {
         images: form.images // 確保圖片路徑被包含在請求數據中
       }
 
-      const response = await axios.post('${apiBaseUrl}/messages', messageData, {
+      const response = await axios.post(`${apiBaseUrl}/messages`, messageData, {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}` // 確保這裡有正確的 token
@@ -392,10 +395,11 @@ const deleteReply = async (messageId, replyId) => {
   }
 }
 
+const isLoggedIn = ref(false) // 假設有一個變數來檢查用戶是否已登入
+
 // 上傳相關的處理
-const handleBeforeUpload = (file) => {
-  const token = localStorage.getItem('token') // 假設 token 存儲在 localStorage 中
-  if (!token) {
+const backgroundeforeUpload = (file) => {
+  if (!isLoggedIn.value) {
     ElMessage.error('請先登入再上傳文件')
     return false
   }
@@ -414,11 +418,9 @@ const handleUploadSuccess = (response, file, fileList) => {
   // 確保 response.files 存在並且是數組
   if (response.files && Array.isArray(response.files)) {
     response.files.forEach((file) => {
-      if (file.path) {
-        // 修正路徑为使用正斜槓以确保路徑正確
-        const correctedPath = file.path.replace(/\\/g, '/')
-        console.log('修正後的圖片路徑:', correctedPath)
-        form.images.push(correctedPath)
+      if (file.url) {
+        console.log('圖片 URL:', file.url)
+        form.images.push(file.url)
       } else {
         console.error('圖片路徑不存在於響應數據中:', response)
       }
@@ -486,7 +488,7 @@ const submitReply = async (messageId) => {
     try {
       // console.log('提交回覆:', { reply })
       await axios.post(
-        `${apiBaseUrl}/messages/${messageId}/replies`,
+        `http://localhost:4000/api/messages/${messageId}/replies`,
         { reply }, // 發送的請求
         {
           headers: {
