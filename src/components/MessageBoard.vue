@@ -161,6 +161,7 @@ import femaleAvatar from '@/assets/female-avatar.png'
 import maleAvatar from '@/assets/male-avatar.png' // 根據需要替換為正確的路徑
 
 const apiBaseUrl = import.meta.env.VITE_API
+const imageBaseUrl = import.meta.env.VITE_IMAGE_BASE_URL
 
 const fileList = ref([])
 
@@ -175,7 +176,7 @@ const getImageUrl = (imagePath) => {
   // 確保路徑是正確的
   const url = imagePath.startsWith('http')
     ? imagePath
-    : `http://localhost:4000/${imagePath.replace(/^public\//, '')}` // 去掉 'public/' 前綴
+    : `${imageBaseUrl}/${imagePath.replace(/^public\//, '')}` // 去掉 'public/' 前綴
   // console.log('生成的圖片 URL:', url)
   return url
 }
