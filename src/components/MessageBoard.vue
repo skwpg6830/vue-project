@@ -417,7 +417,7 @@ const handleUploadSuccess = (response, file, fileList) => {
       if (file.path) {
         // 修正路徑为使用正斜槓以确保路徑正確
         const correctedPath = file.path.replace(/\\/g, '/')
-        // console.log('修正後的圖片路徑:', correctedPath)
+        console.log('修正後的圖片路徑:', correctedPath)
         form.images.push(correctedPath)
       } else {
         console.error('圖片路徑不存在於響應數據中:', response)
