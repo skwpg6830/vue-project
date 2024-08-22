@@ -6,7 +6,7 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 export default defineConfig({
-  base: '/vue-project/',
+  base: './',
   plugins: [vue()],
   resolve: {
     alias: {
