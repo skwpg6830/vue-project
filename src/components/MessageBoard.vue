@@ -240,34 +240,55 @@ const unlikeMessage = async (id) => {
 
 const fetchMessages = async () => {
   try {
+    const token = localStorage.getItem('token')
+    if (!token) {
+      ElMessage.error('未登錄或登錄已過期')
+      return
+    }
+
     const response = await axios.get(`${apiBaseUrl}/messages`, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`
+        Authorization: `Bearer ${token}`
       }
     })
-    console.log(response)
 
-    if (Array.isArray(response.data)) {
-      messages.splice(
-        0,
-        messages.length,
-        ...response.data.map((message) => ({
-          ...message,
-          editName: message.name,
-          editMessage: message.message,
-          editTextColor: message.textColor,
-          images: message.images || [], // 確保圖片數據存在
-          userId: message.userId || {}, // 確保 userId 存在
-          _id: message._id || '' // 確保 _id 存在
-        }))
-      )
+    if (response.status === 200) {
+      console.log('成功加載資料:', response.data)
+      if (Array.isArray(response.data)) {
+        messages.splice(
+          0,
+          messages.length,
+          ...response.data.map((message) => ({
+            ...message,
+            editName: message.name,
+            editMessage: message.message,
+            editTextColor: message.textColor,
+            images: message.images || [], // 確保圖片數據存在
+            userId: message.userId || {}, // 確保 userId 存在
+            _id: message._id || '' // 確保 _id 存在
+          }))
+        )
+      } else {
+        console.error('獲取的數據不是陣列:', response.data)
+        ElMessage.error('獲取留言失敗，數據格式錯誤')
+      }
     } else {
-      console.error('獲取的數據不是陣列:', response.data)
-      ElMessage.error('獲取留言失敗，數據格式錯誤')
+      console.error('加載資料失敗，狀態碼:', response.status)
+      ElMessage.error('加載資料失敗')
     }
   } catch (error) {
-    console.error('獲取留言失敗:', error)
-    ElMessage.error('獲取留言失敗')
+    console.error('加載資料失敗:', error)
+
+    if (error.response) {
+      console.log('錯誤響應資料:', error.response.data)
+      ElMessage.error(`伺服器錯誤回應: ${error.response.data}`)
+    } else if (error.request) {
+      console.log('沒有收到伺服器回應:', error.request)
+      ElMessage.error('沒有收到伺服器回應')
+    } else {
+      console.log('請求錯誤:', error.message)
+      ElMessage.error(`加載資料失敗: ${error.message}`)
+    }
   }
 }
 
