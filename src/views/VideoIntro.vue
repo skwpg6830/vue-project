@@ -8,31 +8,14 @@
 </template>
 
 <script>
-import { onMounted, onUnmounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { onMounted } from 'vue'
 
 export default {
   name: 'VideoIntro',
   setup() {
-    const router = useRouter()
-
-    const handleScroll = (event) => {
-      if (window.scrollY > 0) {
-        router.push('/maincontent')
-      }
-    }
-
     onMounted(() => {
-      window.addEventListener('scroll', handleScroll)
+      const video = document.querySelector('video')
     })
-
-    onUnmounted(() => {
-      window.removeEventListener('scroll', handleScroll)
-    })
-
-    return {
-      handleScroll
-    }
   }
 }
 </script>

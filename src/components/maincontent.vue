@@ -388,19 +388,6 @@ AOS.init()
 
 export default {
   name: 'MainContent',
-  mounted() {
-    window.addEventListener('scroll', this.handleScroll)
-  },
-  beforeUnmount() {
-    window.removeEventListener('scroll', this.handleScroll)
-  },
-  methods: {
-    handleScroll() {
-      if (window.scrollY === 0) {
-        this.$router.push({ name: 'VideoIntro' })
-      }
-    }
-  },
   components: {
     AuthForm,
     MessageBoard,
