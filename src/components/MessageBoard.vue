@@ -494,7 +494,7 @@ const submitReply = async (messageId) => {
     try {
       // console.log('提交回覆:', { reply })
       await axios.post(
-        `${apiBaseUrl}/api/messages/${messageId}/replies`,
+        `http://localhost:4000/api/messages/${messageId}/replies`,
         { reply }, // 發送的請求
         {
           headers: {
