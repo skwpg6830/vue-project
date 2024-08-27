@@ -4,7 +4,7 @@ import VideoIntro from './views/VideoIntro.vue'
 
 const routes = [
   {
-    path: './',
+    path: '/vue-project',
     name: 'home',
     component: Home
   },
